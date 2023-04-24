@@ -1,120 +1,75 @@
 #include "main.h"
 
 /**
- * strcat_cd_error - function that show the error message for the cd command
+ * interactive - returns true if shell is interactive mode
+ * @info: struct address
  *
- * @data: shell data (includes the directory)
- * @msg: message to print
- * @error_msg: output message
- * @counter_str: string representation of the current command counter
- * Return: error message
+ * Return: 1 if interactive mode, 0 otherwise
  */
-char *strcat_cd_error(shell_data *data, char *msg, char *error_msg, char *counter_str)
+int interactive(info_t *info)
 {
-	char *illegal_flag_str;
+	return (isatty(STDIN_FILENO) && info->readfd <= 2);
+}
 
-	_strcpy(error_msg, data->command_name);
-	_strcat(error_msg, ": ");
-	_strcat(error_msg, counter_str);
-	_strcat(error_msg, ": ");
-	_strcat(error_msg, data->command_args[0]);
-	_strcat(error_msg, msg);
+/**
+ * is_delim - checks if character is a delimeter
+ * @c: the char to check
+ * @delim: the delimeter string
+ * Return: 1 if true, 0 if false
+ */
+int is_delim(char c, char *delim)
+{
+	while (*delim)
+		if (*delim++ == c)
+			return (1);
+	return (0);
+}
 
-	if (data->command_args[1][0] == '-')
-	{
-		illegal_flag_str = malloc(3);
-		illegal_flag_str[0] = '-';
-		illegal_flag_str[1] = data->command_args[1][1];
-		illegal_flag_str[2] = '\0';
-		_strcat(error_msg, illegal_flag_str);
-		free(illegal_flag_str);
-	}
+/**
+ *_isalpha - checks for alphabetic character
+ *@c: The character to input
+ *Return: 1 if c is alphabetic, 0 otherwise
+ */
+
+int _isalpha(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
 	else
-	{
-		_strcat(error_msg, data->command_args[1]);
-	}
-
-	_strcat(error_msg, "\n");
-	_strcat(error_msg, "\0");
-
-	return (error_msg);
+		return (0);
 }
 
 /**
- * get_cd_error - error message for cd command in get_cd function
- * @data: shell data (includes the directory)
- * Return: Error message
+ *_atoi - converts a string to an integer
+ *@s: the string to be converted
+ *Return: 0 if no numbers in string, converted number otherwise
  */
-char *get_cd_error(shell_data *data)
+
+int _atoi(char *s)
 {
-	int length, len_id;
-	char *error_msg, *counter_str, *msg;
+	int i, sign = 1, flag = 0, output;
+	unsigned int result = 0;
 
-	counter_str = int_to_string(data->command_counter);
-
-	if (data->command_args[1][0] == '-')
+	for (i = 0;  s[i] != '\0' && flag != 2; i++)
 	{
-		msg = ": Illegal option ";
-		len_id = 2;
+		if (s[i] == '-')
+			sign *= -1;
+
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			flag = 1;
+			result *= 10;
+			result += (s[i] - '0');
+		}
+		else if (flag == 1)
+			flag = 2;
 	}
+
+	if (sign == -1)
+		output = -result;
 	else
-	{
-		msg = ": can't cd to ";
-		len_id = _strlen(data->command_args[1]);
-	}
+		output = result;
 
-	length = _strlen(data->command_name) + _strlen(data->command_args[0]);
-	length += _strlen(counter_str) + _strlen(msg) + len_id + 5;
-	error_msg = malloc(sizeof(char) * (length + 1));
-
-	if (error_msg == 0)
-	{
-		free(counter_str);
-		return (NULL);
-	}
-
-	error_msg = strcat_cd_error(data, msg, error_msg, counter_str);
-
-	free(counter_str);
-
-	return (error_msg);
+	return (output);
 }
-
-/**
- * not_found_error - generic error message for command not found
- * @data: shell data (includes the command counter and arguments)
- * Return: Error message
- */
-char *not_found_error(shell_data *data)
-{
-	int length;
-	char *error_msg;
-	char *counter_str;
-
-	counter_str = int_to_string(data->command_counter);
-	length = _strlen(data->command_name) + _strlen(counter_str);
-	length += _strlen(data->command_args[0]) + 16;
-	error_msg = malloc(sizeof(char) * (length + 1));
-
-	if (error_msg == 0)
-	{
-		free(error_msg);
-		free(counter_str);
-		return (NULL);
-	}
-
-	_strcpy(error_msg, data->command_name);
-	_strcat(error_msg, ": ");
-	_strcat(error_msg, counter_str);
-	_strcat(error_msg, ": ");
-	_strcat(error_msg, data->command_args[0]);
-	_strcat(error_msg, ": not found\n");
-	_strcat(error_msg, "\0");
-
-	free(counter_str);
-
-	return (error_msg);
-}
-
-/**
- * exit_shell_error - generic error message for exit
+ 
