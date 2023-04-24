@@ -1,41 +1,85 @@
 #include "main.h"
-#include "data_shell.h"
 
 /**
- * get_error - calls the error according the builtin, syntax or permission
- * @data: data structure that contains arguments
- * @eval: error value
- * Return: error
+ *_eputs - prints an input string
+ * @str: the string to be printed
+ *
+ * Return: Nothing
  */
-int get_error(data_shell *data, int eval)
+void _eputs(char *str)
 {
-	char *error_msg;
+	int i = 0;
 
-	switch (eval)
+	if (!str)
+		return;
+	while (str[i] != '\0')
 	{
-	case -1:
-		error_msg = error_env(data);
-		break;
-	case 126:
-		error_msg = error_path_126(data);
-		break;
-	case 127:
-		error_msg = error_not_found(data);
-		break;
-	case 2:
-		if (_strcmp("exit", data->args[0]) == 0)
-			error_msg = error_exit_shell(data);
-		else if (_strcmp("cd", data->args[0]) == 0)
-			error_msg = error_get_cd(data);
-		break;
+		_eputchar(str[i]);
+		i++;
 	}
+}
 
-	if (error_msg)
+/**
+ * _eputchar - writes the character c to stderr
+ * @c: The character to print
+ *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
+ */
+int _eputchar(char c)
+{
+	static int i;
+	static char buf[WRITE_BUF_SIZE];
+
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		write(STDERR_FILENO, error_msg, _strlen(error_msg));
-		free(error_msg);
+		write(2, buf, i);
+		i = 0;
 	}
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
+	return (1);
+}
 
-	data->status = eval;
-	return (eval);
+/**
+ * _putfd - writes the character c to given fd
+ * @c: The character to print
+ * @fd: The filedescriptor to write to
+ *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
+ */
+int _putfd(char c, int fd)
+{
+	static int i;
+	static char buf[WRITE_BUF_SIZE];
+
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	{
+		write(fd, buf, i);
+		i = 0;
+	}
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
+	return (1);
+}
+
+/**
+ *_putsfd - prints an input string
+ * @str: the string to be printed
+ * @fd: the filedescriptor to write to
+ *
+ * Return: the number of chars put
+ */
+int _putsfd(char *str, int fd)
+{
+	int i = 0;
+
+	if (!str)
+		return (0);
+	while (*str)
+	{
+		i += _putfd(*str++, fd);
+	}
+	return (i);
 }
