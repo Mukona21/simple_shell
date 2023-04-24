@@ -1,165 +1,86 @@
 #include "main.h"
 
 /**
- * cd_dot - changes to the parent directory
+ * is_cmd - determines if a file is an executable command
+ * @info: the info struct
+ * @path: path to the file
  *
- * @datash: data relevant (environ)
- *
- * Return: no return
+ * Return: 1 if true, 0 otherwise
  */
-void cd_dot(data_shell *datash)
+int is_cmd(info_t *info, char *path)
 {
-	char pwd[PATH_MAX];
-	char *dir, *cp_pwd, *cp_strtok_pwd;
+	struct stat st;
 
-	getcwd(pwd, sizeof(pwd));
-	cp_pwd = _strdup(pwd);
-	set_env("OLDPWD", cp_pwd, datash);
-	dir = datash->args[1];
-	if (_strcmp(".", dir) == 0)
-	{
-		set_env("PWD", cp_pwd, datash);
-		free(cp_pwd);
-		return;
-	}
-	if (_strcmp("/", cp_pwd) == 0)
-	{
-		free(cp_pwd);
-		return;
-	}
-	cp_strtok_pwd = cp_pwd;
-	rev_string(cp_strtok_pwd);
-	cp_strtok_pwd = _strtok(cp_strtok_pwd, "/");
-	if (cp_strtok_pwd != NULL)
-	{
-		cp_strtok_pwd = _strtok(NULL, "\0");
+	(void)info;
+	if (!path || stat(path, &st))
+		return (0);
 
-		if (cp_strtok_pwd != NULL)
-			rev_string(cp_strtok_pwd);
-	}
-	if (cp_strtok_pwd != NULL)
+	if (st.st_mode & S_IFREG)
 	{
-		chdir(cp_strtok_pwd);
-		set_env("PWD", cp_strtok_pwd, datash);
+		return (1);
 	}
-	else
-	{
-		chdir("/");
-		set_env("PWD", "/", datash);
-	}
-	datash->status = 0;
-	free(cp_pwd);
+	return (0);
 }
 
 /**
- * cd_to - changes to a directory given
- * by the user
+ * dup_chars - duplicates characters
+ * @pathstr: the PATH string
+ * @start: starting index
+ * @stop: stopping index
  *
- * @datash: data relevant (directories)
- * Return: no return
+ * Return: pointer to new buffer
  */
-void cd_to(data_shell *datash)
+char *dup_chars(char *pathstr, int start, int stop)
 {
-	char pwd[PATH_MAX];
-	char *dir, *cp_pwd, *cp_dir;
+	static char buf[1024];
+	int i = 0, k = 0;
 
-	getcwd(pwd, sizeof(pwd));
-
-	dir = datash->args[1];
-	if (chdir(dir) == -1)
-	{
-		get_error(datash, 2);
-		return;
-	}
-
-	cp_pwd = _strdup(pwd);
-	set_env("OLDPWD", cp_pwd, datash);
-
-	cp_dir = _strdup(dir);
-	set_env("PWD", cp_dir, datash);
-
-	free(cp_pwd);
-	free(cp_dir);
-
-	datash->status = 0;
-
-	chdir(dir);
+	for (k = 0, i = start; i < stop; i++)
+		if (pathstr[i] != ':')
+			buf[k++] = pathstr[i];
+	buf[k] = 0;
+	return (buf);
 }
 
 /**
- * cd_previous - changes to the previous directory
+ * find_path - finds this cmd in the PATH string
+ * @info: the info struct
+ * @pathstr: the PATH string
+ * @cmd: the cmd to find
  *
- * @datash: data relevant (environ)
- * Return: no return
+ * Return: full path of cmd if found or NULL
  */
-void cd_previous(data_shell *datash)
+char *find_path(info_t *info, char *pathstr, char *cmd)
 {
-	char pwd[PATH_MAX];
-	char *p_pwd, *p_oldpwd, *cp_pwd, *cp_oldpwd;
+	int i = 0, curr_pos = 0;
+	char *path;
 
-	getcwd(pwd, sizeof(pwd));
-	cp_pwd = _strdup(pwd);
-
-	p_oldpwd = _getenv("OLDPWD", datash->_environ);
-
-	if (p_oldpwd == NULL)
-		cp_oldpwd = cp_pwd;
-	else
-		cp_oldpwd = _strdup(p_oldpwd);
-
-	set_env("OLDPWD", cp_pwd, datash);
-
-	if (chdir(cp_oldpwd) == -1)
-		set_env("PWD", cp_pwd, datash);
-	else
-		set_env("PWD", cp_oldpwd, datash);
-
-	p_pwd = _getenv("PWD", datash->_environ);
-
-	write(STDOUT_FILENO, p_pwd, _strlen(p_pwd));
-	write(STDOUT_FILENO, "\n", 1);
-
-	free(cp_pwd);
-	if (p_oldpwd)
-		free(cp_oldpwd);
-
-	datash->status = 0;
-
-	chdir(p_pwd);
-}
-
-/**
- * cd_to_home - changes to home directory
- *
- * @datash: data relevant (environ)
- * Return: no return
- */
-void cd_to_home(data_shell *datash)
-{
-	char *p_pwd, *home;
-	char pwd[PATH_MAX];
-
-	getcwd(pwd, sizeof(pwd));
-	p_pwd = _strdup(pwd);
-
-	home = _getenv("HOME", datash->_environ);
-
-	if (home == NULL)
+	if (!pathstr)
+		return (NULL);
+	if ((_strlen(cmd) > 2) && starts_with(cmd, "./"))
 	{
-		set_env("OLDPWD", p_pwd, datash);
-		free(p_pwd);
-		return;
+		if (is_cmd(info, cmd))
+			return (cmd);
 	}
-
-	if (chdir(home) == -1)
+	while (1)
 	{
-		get_error(datash, 2);
-		free(p_pwd);
-		return;
+		if (!pathstr[i] || pathstr[i] == ':')
+		{
+			path = dup_chars(pathstr, curr_pos, i);
+			if (!*path)
+				_strcat(path, cmd);
+			else
+			{
+				_strcat(path, "/");
+				_strcat(path, cmd);
+			}
+			if (is_cmd(info, path))
+				return (path);
+			if (!pathstr[i])
+				break;
+			curr_pos = i;
+		}
+		i++;
 	}
-
-	set_env("OLDPWD", p_pwd, datash);
-	set_env("PWD", home, datash);
-	free(p_pwd);
-	datash->status = 0;
+	return (NULL);
 }
