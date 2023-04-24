@@ -1,80 +1,74 @@
 #include "main.h"
 
 /**
- * print_env_help - Prints help information for the "env" builtin command
- * Return: No return value
+ * clear_info - initializes info_t struct
+ * @info: struct address
  */
-void print_env_help(void)
+void clear_info(info_t *info)
 {
-	char *help_str = "env: env [option] [name=value] [command [args]]\n\t";
-
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "Print the environment of the shell.\n";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
+	info->arg = NULL;
+	info->argv = NULL;
+	info->path = NULL;
+	info->argc = 0;
 }
 
 /**
- * print_setenv_help - Prints help information for the "setenv" builtin command
- * Return: No return value
+ * set_info - initializes info_t struct
+ * @info: struct address
+ * @av: argument vector
  */
-void print_setenv_help(void)
+void set_info(info_t *info, char **av)
 {
-	char *help_str = "setenv: setenv (const char *name, const char *value,";
+	int i = 0;
 
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "int replace)\n\t";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "Add a new definition to the environment\n";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
+	info->fname = av[0];
+	if (info->arg)
+	{
+		info->argv = strtow(info->arg, " \t");
+		if (!info->argv)
+		{
+
+			info->argv = malloc(sizeof(char *) * 2);
+			if (info->argv)
+			{
+				info->argv[0] = _strdup(info->arg);
+				info->argv[1] = NULL;
+			}
+		}
+		for (i = 0; info->argv && info->argv[i]; i++)
+			;
+		info->argc = i;
+
+		replace_alias(info);
+		replace_vars(info);
+	}
 }
 
 /**
- * print_unsetenv_help - Prints help info for the "unsetenv" builtin comd
- * Return: No return value
+ * free_info - frees info_t struct fields
+ * @info: struct address
+ * @all: true if freeing all fields
  */
-void print_unsetenv_help(void)
+void free_info(info_t *info, int all)
 {
-	char *help_str = "unsetenv: unsetenv (const char *name)\n\t";
-
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "Remove an entry completely from the environment\n";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-}
-
-/**
- * print_general_help - Entry point for help infor for the help builtin
- * Return: No return value
- */
-void print_general_help(void)
-{
-	char *help_str = "^-^ bash, version 1.0(1)-release\n";
-
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "comnd are defined internally. Type 'help' to see the list";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "Type 'help name' to find about the function 'name'.\n\n ";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = " alias: [name=['string']]\n cd: cd [-L|[-P [-e]] [-@]] ";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "[dir]\nexit: exit [n]\n  env: env [optn] [n=val] [comnd ";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "[args]]\n  setenv: setenv [variable] [value]\n  unsetenv: ";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "unsetenv [variable]\n";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-}
-
-/**
- * print_exit_help - Prints help info for the "exit" builtin command
- * Return: No return value
- */
-void print_exit_help(void)
-{
-	char *help_str = "exit: exit [n]\n Exit shell.\n";
-
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "Exits the shell with a status of N. If N is omitted, the exit";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
-	help_str = "status is that of the last command executed.\n";
-	write(STDOUT_FILENO, help_str, _strlen(help_str));
+	ffree(info->argv);
+	info->argv = NULL;
+	info->path = NULL;
+	if (all)
+	{
+		if (!info->cmd_buf)
+			free(info->arg);
+		if (info->env)
+			free_list(&(info->env));
+		if (info->history)
+			free_list(&(info->history));
+		if (info->alias)
+			free_list(&(info->alias));
+		ffree(info->environ);
+			info->environ = NULL;
+		bfree((void **)info->cmd_buf);
+		if (info->readfd > 2)
+			close(info->readfd);
+		_putchar(BUF_FLUSH);
+	}
 }
