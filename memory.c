@@ -1,91 +1,122 @@
 #include "main.h"
 
 /**
- * _memcpy - copies information between void pointers.
- * @newptr: destination pointer.
- * @ptr: source pointer.
- * @size: size of the new pointer.
+ * list_len - determines length of linked list
+ * @h: pointer to first node
  *
- * Return: no return.
+ * Return: size of list
  */
-void _memcpy(void *newptr, const void *ptr, unsigned int size)
+size_t list_len(const list_t *h)
 {
-	char *char_ptr = (char *)ptr;
-	char *char_newptr = (char *)newptr;
-	unsigned int i;
+	size_t i = 0;
 
-	for (i = 0; i < size; i++)
-		char_newptr[i] = char_ptr[i];
-}
-
-/**
- * _realloc - reallocates a memory block.
- * @ptr: pointer to the memory previously allocated.
- * @old_size: size, in bytes, of the allocated space of ptr.
- * @new_size: new size, in bytes, of the new memory block.
- *
- * Return: ptr.
- * if new_size == old_size, returns ptr without changes.
- * if malloc fails, returns NULL.
- */
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
-{
-	void *newptr;
-
-	if (ptr == NULL)
-		return (malloc(new_size));
-
-	if (new_size == 0)
+	while (h)
 	{
-		free(ptr);
-		return (NULL);
+		h = h->next;
+		i++;
 	}
-
-	if (new_size == old_size)
-		return (ptr);
-
-	newptr = malloc(new_size);
-	if (newptr == NULL)
-		return (NULL);
-
-	if (new_size < old_size)
-		_memcpy(newptr, ptr, new_size);
-	else
-		_memcpy(newptr, ptr, old_size);
-
-	free(ptr);
-	return (newptr);
+	return (i);
 }
 
 /**
- * _reallocdp - reallocates a memory block of a double pointer.
- * @ptr: double pointer to the memory previously allocated.
- * @old_size: size, in bytes, of the allocated space of ptr.
- * @new_size: new size, in bytes, of the new memory block.
+ * list_to_strings - returns an array of strings of the list->str
+ * @head: pointer to first node
  *
- * Return: ptr.
- * if new_size == old_size, returns ptr without changes.
- * if malloc fails, returns NULL.
+ * Return: array of strings
  */
-char **_reallocdp(char **ptr, unsigned int old_size, unsigned int new_size)
+char **list_to_strings(list_t *head)
 {
-	char **newptr;
-	unsigned int i;
+	list_t *node = head;
+	size_t i = list_len(head), j;
+	char **strs;
+	char *str;
 
-	if (ptr == NULL)
-		return (malloc(sizeof(char *) * new_size));
-
-	if (new_size == old_size)
-		return (ptr);
-
-	newptr = malloc(sizeof(char *) * new_size);
-	if (newptr == NULL)
+	if (!head || !i)
 		return (NULL);
+	strs = malloc(sizeof(char *) * (i + 1));
+	if (!strs)
+		return (NULL);
+	for (i = 0; node; node = node->next, i++)
+	{
+		str = malloc(_strlen(node->str) + 1);
+		if (!str)
+		{
+			for (j = 0; j < i; j++)
+				free(strs[j]);
+			free(strs);
+			return (NULL);
+		}
 
-	for (i = 0; i < old_size; i++)
-		newptr[i] = ptr[i];
+		str = _strcpy(str, node->str);
+		strs[i] = str;
+	}
+	strs[i] = NULL;
+	return (strs);
+}
 
-	free(ptr);
 
-	return (newptr);
+/**
+ * print_list - prints all elements of a list_t linked list
+ * @h: pointer to first node
+ *
+ * Return: size of list
+ */
+size_t print_list(const list_t *h)
+{
+	size_t i = 0;
+
+	while (h)
+	{
+		_puts(convert_number(h->num, 10, 0));
+		_putchar(':');
+		_putchar(' ');
+		_puts(h->str ? h->str : "(nil)");
+		_puts("\n");
+		h = h->next;
+		i++;
+	}
+	return (i);
+}
+
+/**
+ * node_starts_with - returns node whose string starts with prefix
+ * @node: pointer to list head
+ * @prefix: string to match
+ * @c: the next character after prefix to match
+ *
+ * Return: match node or null
+ */
+list_t *node_starts_with(list_t *node, char *prefix, char c)
+{
+	char *p = NULL;
+
+	while (node)
+	{
+		p = starts_with(node->str, prefix);
+		if (p && ((c == -1) || (*p == c)))
+			return (node);
+		node = node->next;
+	}
+	return (NULL);
+}
+
+/**
+ * get_node_index - gets the index of a node
+ * @head: pointer to list head
+ * @node: pointer to the node
+ *
+ * Return: index of node or -1
+ */
+ssize_t get_node_index(list_t *head, list_t *node)
+{
+	size_t i = 0;
+
+	while (head)
+	{
+		if (head == node)
+			return (i);
+		head = head->next;
+		i++;
+	}
+	return (-1);
 }
