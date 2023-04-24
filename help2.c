@@ -1,43 +1,93 @@
 #include "main.h"
 
 /**
- * print_help_info - Displays help information for the built-in help command
- * Return: No return value
+ * get_environ - returns the string array copy of our environ
+ * @info: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ * Return: Always 0
  */
-void print_help_info(void)
+char **get_environ(info_t *info)
 {
-	char *help_msg = "help: help [-dms] [pattern ...]\n";
+	if (!info->environ || info->env_changed)
+	{
+		info->environ = list_to_strings(info->env);
+		info->env_changed = 0;
+	}
 
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
-	help_msg = "\tDisplay information about builtin commands.\n ";
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
-	help_msg = "Displays brief summaries of builtin commands.\n";
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
+	return (info->environ);
 }
 
 /**
- * print_alias_help - Displays help information for the built-in alias command
- * Return: No return value
+ * _unsetenv - Remove an environment variable
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: 1 on delete, 0 otherwise
+ * @var: the string env var property
  */
-void print_alias_help(void)
+int _unsetenv(info_t *info, char *var)
 {
-	char *help_msg = "alias: alias [-p] [name[=value]...]\n";
+	list_t *node = info->env;
+	size_t i = 0;
+	char *p;
 
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
-	help_msg = "\tDefine or display aliases.\n ";
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
+	if (!node || !var)
+		return (0);
+
+	while (node)
+	{
+		p = starts_with(node->str, var);
+		if (p && *p == '=')
+		{
+			info->env_changed = delete_node_at_index(&(info->env), i);
+			i = 0;
+			node = info->env;
+			continue;
+		}
+		node = node->next;
+		i++;
+	}
+	return (info->env_changed);
 }
 
 /**
- * print_cd_help - Displays help information for the built-in cd command
- * Return: No return value
+ * _setenv - Initialize a new environment variable,
+ *             or modify an existing one
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ * @var: the string env var property
+ * @value: the string env var value
+ *  Return: Always 0
  */
-void print_cd_help(void)
+int _setenv(info_t *info, char *var, char *value)
 {
-	char *help_msg = "cd: cd [-L|[-P [-e]] [-@]] [dir]\n";
+	char *buf = NULL;
+	list_t *node;
+	char *p;
 
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
-	help_msg = "\tChange the shell working directory.\n ";
-	write(STDOUT_FILENO, help_msg, strlen(help_msg));
+	if (!var || !value)
+		return (0);
+
+	buf = malloc(_strlen(var) + _strlen(value) + 2);
+	if (!buf)
+		return (1);
+	_strcpy(buf, var);
+	_strcat(buf, "=");
+	_strcat(buf, value);
+	node = info->env;
+	while (node)
+	{
+		p = starts_with(node->str, var);
+		if (p && *p == '=')
+		{
+			free(node->str);
+			node->str = buf;
+			info->env_changed = 1;
+			return (0);
+		}
+		node = node->next;
+	}
+	add_node_end(&(info->env), buf, 0);
+	free(buf);
+	info->env_changed = 1;
+	return (0);
 }
-
