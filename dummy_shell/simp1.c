@@ -1,10 +1,10 @@
 #include "main.h"
 
 /**
- * exit_shell - exits the shell with or without a return of status num
- * @args: array of words of the line
+ * exitt - exits the shell with or without a return of status num
+ * @arv: array of words of the line
  */
-void exit_shell(char **arv)
+void exitt(char **arv)
 {
 	int i, status;
 
@@ -157,5 +157,5 @@ void unset_env(char **args)
 		}
 	}
 	}
-}	
+}
 
