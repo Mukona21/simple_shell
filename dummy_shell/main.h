@@ -62,5 +62,7 @@ void _setenv(char **arv);
 void freearv(char **arv);
 void free_list(list_path *head);
 
+void exitt(char **arguments)
+
 #endif
 
