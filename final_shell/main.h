@@ -31,11 +31,12 @@ typedef struct error_msg
  *
  * Description: Longer description
  */
-typedef struct built_s
+typedef struct builtin_s
 {
 	char *command;
-	void (*f)(char **);
-} built_t;
+	void (*func)(char **);
+} builtin_t;
+
 
 /**
  * struct history - An structure for each command readed
@@ -64,11 +65,11 @@ typedef struct command_s
 {
 	char **command;
 	struct command_s *next;
+	void (*func)(char **);
 } command_t;
 
 /* Command Utilities*/
 command_t *new_command_node(char *shell_name);
-command_t *cmd_node = malloc(sizeof(command_t));
 int add_token_to_command(char *shell_name,
 		command_t *cmd_node, size_t index, char *token);
 
@@ -82,12 +83,12 @@ static int _exec_command(const char *cmd, char *const argv[],
 			char *const envp[]);
 
 /*utilities*/
-void exit_shell(int status_code);
 char *find_path(char **environ);
 void print_env(char **environ);
 char *_which(char *path, char *command);
 int _fork_command(command_t *cmd, const char *path, char *const env[]);
 int add_history_node(history_t **head, char *str);
 void free_history_list(history_t *head);
+void exit_shell(char **env);
 
 #endif

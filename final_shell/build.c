@@ -13,14 +13,14 @@ int execute_builtin(char *command, char **env)
 {
 	int i, result;
 	builtin_t builtins[] = {
-		{"env", print_env},
-		{"exit", exit_shell},
-		{NULL, NULL}
+	{"env", print_env},
+	{"exit", exit_shell},
+	{NULL, NULL}
 	};
 
 	for (i = 0; builtins[i].command != NULL; i++)
 	{
-		result = _strcmp(command, builtins[i].command);
+		result = strcmp(command, builtins[i].command);
 		if (result == 0)
 		{
 			builtins[i].func(env);
@@ -30,4 +30,3 @@ int execute_builtin(char *command, char **env)
 
 	return (0);
 }
-
