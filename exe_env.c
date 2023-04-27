@@ -1,9 +1,9 @@
 #include "main.h"
 
 /**
- * get_path - gets the value from env PATH
+ * get_path - gets the value from PATH
  *
- * @env: env var pointer
+ * @env: var pointer
  *
  * Return: pathways for commands
  */
@@ -29,15 +29,15 @@ char **get_path(char **env)
 
 
 /**
- * execute - function that executes a command
+ * execute - function that executes a cmnd
  *
- * @command: command pointer
+ * @command: cmnd pointer
  *
- * @name: shell name
+ * @name: shell nam
  *
- * @env: environmental variables pointer
- * @cicles: number of executed cicles
- * Return: nothing
+ * @env: environ variables pointer
+ * @cicles: num of executed cicles
+ * Return: nthng
  */
 void execute(char **command, char *name, char **env, int cicles)
 {
@@ -80,12 +80,12 @@ void execute(char **command, char *name, char **env, int cicles)
 
 
 /**
- * msgerror - Prints message not found
+ * msgerror - Prints message error
  *
- * @name: shell name
- * @cicles: number of cicles
- * @command: tokenized command
- * Return: nothing
+ * @name: shell nam
+ * @cicles: num of cicles
+ * @command: tokenized cmnd
+ * Return: none
  */
 void msgerror(char *name, int cicles, char **command)
 {
@@ -102,9 +102,9 @@ void msgerror(char *name, int cicles, char **command)
 
 
 /**
- * print_env - prints all enviromental variable.
- * @env: enviromental variables pointer
- * return: nothing
+ * print_env - prints all env variable.
+ * @env: env variables pointer
+ * return: none
  */
 void print_env(char **env)
 {
