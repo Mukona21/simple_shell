@@ -12,7 +12,7 @@ char *_strdup(char *string)
 	char *dupl;
 	int len, i;
 
-	if (string == NULL)
+		if (string == NULL)
 		return (NULL);
 
 	len = _strlen(string);
@@ -67,7 +67,7 @@ int _strcmp(char *str1, char *str2)
  * @string: The given string.
  * @q: The character to search for.
  *
- * Return: A pointer to the first occurrence of q in string, or NULL if not found.
+ * Return: A pointer to the 1st of q in string, or NULL if not found.
  */
 char *_strchr(char *string, char q)
 {

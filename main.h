@@ -79,8 +79,8 @@ extern char **environ;
  *Description: all the variables needed for program to run
  */
  typedef struct sh_data
- {
+{
     char *env
- }
+}
 
  #endif
