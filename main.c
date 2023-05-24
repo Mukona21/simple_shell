@@ -30,7 +30,7 @@ int main(int in_num_args, char **in_arry_args, char **envp)
 			input_buffer[string_len(input_buffer) - 1] = '\0';
 			cmd = tokenizer(input_buffer, " \0");
 			free(input_buffer);
-			
+
 			if (string_compare(cmd[0], "exit") != 0)
 			{
 				exit_shell(cmd);
