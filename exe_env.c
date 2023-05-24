@@ -18,8 +18,8 @@ char **get_path_dirs(char **en)
 		if (string_compare(path_value, "PATH"))
 		{
 			path_value = strtok(NULL, "\n");
-			pathway = tokenizer(path_value, ":");
-			return (pathway);
+			path_way = tokenizer(path_value, ":");
+			return (path_way);
 		}
 		i++;
 		path_value = strtok(en[i], "=");
@@ -52,7 +52,7 @@ void execute_cmd(char **cmd, char *name, char **env, int cycles)
 		if (execve(cmd[0], cmd, env) < 0)
 		{
 			perror(name);
-			free_exit_exit(cmd);
+			free_mem_exit(cmd);
 		}
 	}
 	else

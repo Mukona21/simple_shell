@@ -28,18 +28,18 @@ char **tokenizer(char *buffer, const char *string)
 	token = strtok(buffer, string);
 	while (token != NULL)
 	{
-		tokens[i] = malloc(string_len(token) + 1);
-		if (tokens[i] == NULL)
+		tokens[tokencount] = malloc(string_len(token) + 1);
+		if (tokens[tokencount] == NULL)
 		{
 			perror("Buffer allocation error");
-			free_mem(tokens);
+			free_memory(tokens);
 			return (NULL);
 		}
-		string_copy(tokens[i], token);
+		string_copy(tokens[tokencount], token);
 		token = strtok(NULL, string);
-		i++;
+		tokencount++;
 	}
 
-	commands[i] = NULL;
+	tokens[tokencount] = NULL;
 	return (tokens);
 }

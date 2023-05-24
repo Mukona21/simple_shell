@@ -19,7 +19,7 @@ unsigned int string_len(char *str);
 char *string_copy(char *destination, char *source);
 char *string_con(char *destination, char *source);
 int str_int(char *string);
-int main_c(int in_num_args, char **in_arry_args, char **envp);
+int main(int in_num_args, char **in_arry_args, char **envp);
 void handle_signal(int prompt_handle);
 void exit_shell(char **cmd);
 void handle_EOF(char *buffer_string);
@@ -29,4 +29,5 @@ int change_directory(const char *path);
 void child_pro(char **cmd, char *name, char **en, int cycles);
 char **tokenizer(char *buffer, const char *string);
 
-#endif
+
+#endif /*MAIN_H*/

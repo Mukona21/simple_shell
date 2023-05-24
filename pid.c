@@ -14,7 +14,7 @@ int change_directory(const char *path)
 	size_t size = 1024;
 
 	if (path == NULL)
-		path = getcwd(buf, size);
+		path = getcwd(buff, size);
 	if (chdir(path) == -1)
 	{
 		perror(path);
@@ -27,9 +27,6 @@ int change_directory(const char *path)
 /**
  * child_pro - Function that creates a sub process.
  * @cmd: Pointer to tokenize command
- * @name: Pointer to shell name.
- * @en: Enviromental variables pointer.
- * @cycles: No of executed cycles.
  * Return: Nothing.
  */
 void child_pro(char **cmd, char *name, char **en, int cycles)
@@ -46,7 +43,7 @@ void child_pro(char **cmd, char *name, char **en, int cycles)
 	}
 	else if (pid == 0)
 	{
-		execute(cmd, name, en, cycles);
+		execute_cmd(cmd, name, en, cycles);
 		free_memory(cmd);
 	}
 	else

@@ -99,7 +99,7 @@ int str_int(char *string)
 		{
 			str_k = 1;
 			result *= 10;
-			result += (string[st] - '0');
+			result += (string[pr] - '0');
 		}
 		else if (str_k == 1)
 			str_k = 2;

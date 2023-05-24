@@ -22,7 +22,7 @@ void free_mem_exit(char **cmd)
 	if (cmd[i] == NULL)
 		free(cmd[i]);
 	free(cmd);
-	exit(EXIT_MEM);
+	exit(0);
 }
 
 
