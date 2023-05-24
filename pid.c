@@ -27,6 +27,9 @@ int change_directory(const char *path)
 /**
  * child_pro - Function that creates a sub process.
  * @cmd: Pointer to tokenize command
+ * @name: shell name of pointer.
+ * @en: environ variable pointers.
+ * @cycles: number of executed cycles.
  * Return: Nothing.
  */
 void child_pro(char **cmd, char *name, char **en, int cycles)
