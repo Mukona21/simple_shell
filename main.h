@@ -13,6 +13,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
+
+
 /*macro*/
 #define SUCCESS (1)
 #define FAIL (-1)
@@ -22,13 +24,6 @@
 #define BUFSIZE 256
 #define PROMPT "$ "
 
-/*builtin*/
-int handle_builtin(sh_t *data);
-int display_help(sh_t *data);
-int abort_program(sh_t *data __attribute__((unused)));
-int change_directory(sh_t *data);
-int _builtin(const void *data);
-
 /*tool1*/
 void *fill_array(void *arr, int element, size_t length);
 char *_getenv(const char *name);
@@ -37,10 +32,8 @@ void signal_handler(int signid);
 
 /*tool2*/
 int intlen(int n);
-int write_history(sh_t *data __attribute__((unused)));
 char *_itoa(unsigned int num);
 int _atoi(char *s);
-int print_error(sh_t *data);
 
 /*string1*/
 int _isalpha(int p);
@@ -57,11 +50,6 @@ char *_strcat(char *frst, char *sec);
 char *_memorycpy(char *des, char *Source, unsigned int num);
 char *_memoryset(char *r, char bytes, unsigned int num);
 void *_realloc(void *poi, unsigned int old_s, unsigned int new_s);
-int freedata(sh_t *data);
-
-/*path*/
-int convert_to_short_form(sh_data_t *data);
-int validate_path(PathD *newPathdata);
 
 /*Global variable*/
 extern char **environ;
@@ -75,12 +63,19 @@ extern char **environ;
  * @cmd: command
  * @index: the index command
  * @env: environ
+ * @error_message: path global
+ * @oldpwd: the old path
  *
  *Description: all the variables needed for program to run
  */
- typedef struct sh_data
+typedef struct sh_data
 {
-    char *env
-}
+	char *env;
+	char *line;
+	char **args;
+	char *cmd;
+	char *index;
+	char *error_message;
+} sh_t;
 
- #endif
+#endif

@@ -43,8 +43,6 @@ int main(int argc, char **argv, char **envp)
 		input = NULL;
 		input_size = 0;
 	}
-	
-	// The code will never reach this point, but added for completeness
 	if (chars_read == -1)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);

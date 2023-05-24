@@ -17,7 +17,7 @@ void exitShell(char **command);
 
 /*	 pid.c	*/
 
-void createChildProcess(char **command, char *shellName, char **environment, int cycles);
+void createChildProcess(char **cmnd, char *shellNam, char **enviro, int cycle);
 int changeDirectory(const char *path);
 
 /*        exe_env.c       */

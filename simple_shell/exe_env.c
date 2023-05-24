@@ -73,7 +73,7 @@ void executeCommand(char **command, char *shellName, char **env, int cycles)
 }
 
 /**
- * printCommandNotFoundError - Prints an error message when a command is not found.
+ * printCommandNotFoundError - Prints an error message when cmnd is not found.
  *
  * @shellName: Name of the shell.
  * @cycles: Number of cycles.
@@ -94,7 +94,7 @@ void printCommandNotFoundError(char *shellName, int cycles, char **command)
 }
 
 /**
- * getExecutablePaths - Retrieves the executable paths from the PATH environment variable.
+ * getExecutablePaths - Retrieves executable paths from the PATH env variable.
  *
  * @env: Array of environment variables.
  *
@@ -113,7 +113,7 @@ char **getExecutablePaths(char **env)
 			pathEnv = strtok(env[index], "=");
 			pathEnv = strtok(NULL, "\n");
 			paths = tokenize(pathEnv, ":");
-			return paths;
+			return (paths);
 		}
 		index++;
 	}
