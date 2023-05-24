@@ -7,21 +7,21 @@
  */
 void freeMemory(char **strings)
 {
-    size_t i = 0;
+	size_t i = 0;
 
-    if (strings == NULL)
-        return;
+	if (strings == NULL)
+	return;
 
-    while (strings[i])
-    {
-        free(strings[i]);
-        i++;
-    }
+	while (strings[i])
+	{
+		free(strings[i]);
+		i++;
+	}
 
-    if (strings[i] == NULL)
-        free(strings[i]);
+	if (strings[i] == NULL)
+	free(strings[i]);
 
-    free(strings);
+	free(strings);
 }
 
 /**
@@ -31,20 +31,20 @@ void freeMemory(char **strings)
  */
 void freeMemoryAndExit(char **strings)
 {
-    size_t i = 0;
+	size_t i = 0;
 
-    if (strings == NULL)
-        return;
+	if (strings == NULL)
+	return;
 
-    while (strings[i])
-    {
-        free(strings[i]);
-        i++;
-    }
+	while (strings[i])
+	{
+		free(strings[i]);
+		i++;
+	}
 
-    if (strings[i] == NULL)
-        free(strings[i]);
+	if (strings[i] == NULL)
+	free(strings[i]);
 
-    free(strings);
-    exit(EXIT_FAILURE);
+	free(strings);
+	exit(EXIT_FAILURE);
 }

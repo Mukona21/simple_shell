@@ -7,30 +7,30 @@
  */
 int stringToInteger(char *string)
 {
-    int sign = 1, flag = 0, output;
-    unsigned int result = 0;
+	int sign = 1, flag = 0, output;
+	unsigned int result = 0;
 
-    for (int i = 0; string[i] != '\0' && flag != 2; i++)
-    {
-        if (string[i] == '-')
-            sign *= -1;
+	for (int i = 0; string[i] != '\0' && flag != 2; i++)
+	{
+		if (string[i] == '-')
+		sign *= -1;
 
-        if (string[i] >= '0' && string[i] <= '9')
-        {
-            flag = 1;
-            result *= 10;
-            result += (string[i] - '0');
-        }
-        else if (flag == 1)
-            flag = 2;
-    }
+	if (string[i] >= '0' && string[i] <= '9')
+	{
+		flag = 1;
+		result *= 10;
+		result += (string[i] - '0');
+	}
+	else if (flag == 1)
+	flag = 2;
+	}
 
-    if (sign == -1)
-        output = -result;
-    else
-        output = result;
+		if (sign == -1)
+		output = -result;
+	else
+		output = result;
 
-    return (output);
+	return (output);
 }
 
 /**
@@ -40,15 +40,15 @@ int stringToInteger(char *string)
  */
 unsigned int stringLength(char *str)
 {
-    int len = 0;
+	int len = 0;
 
-    if (!str)
-        return 0;
+	if (!str)
+	return (0);
 
-    while (*str++)
-        len++;
-    
-    return (len);
+	while (*str++)
+	len++;
+
+	return (len);
 }
 
 
@@ -60,14 +60,14 @@ unsigned int stringLength(char *str)
  */
 char *stringCopy(char *destination, char *source)
 {
-    char *temp = destination;
+	char *temp = destination;
 
-    while (*source)
-        *destination++ = *source++;
-    
-    *destination = '\0';
+	while (*source)
+	*destination++ = *source++;
 
-    return (temp);
+	*destination = '\0';
+
+	return (temp);
 }
 
 
@@ -79,17 +79,17 @@ char *stringCopy(char *destination, char *source)
  */
 char *stringConcatenate(char *destination, char *source)
 {
-    char *temp = destination;
+	char *temp = destination;
 
-    while (*destination)
-        destination++;
+	while (*destination)
+	destination++;
 
-    *destination++ = '/';
+	*destination++ = '/';
 
-    while (*source)
-        *destination++ = *source++;
-    
-    return (temp);
+	while (*source)
+	*destination++ = *source++;
+
+	return (temp);
 }
 
 /**
@@ -100,14 +100,14 @@ char *stringConcatenate(char *destination, char *source)
  */
 int stringCompare(char *str1, char *str2)
 {
-    unsigned int index = 0;
+	unsigned int index = 0;
 
-    while (str1[index])
-    {
-        if (str1[index] != str2[index])
-            return 0;
-        index++;
-    }
+	while (str1[index])
+	{
+		if (str1[index] != str2[index])
+		return (0);
+		index++;
+	}
 
-    return (1);
+	return (1);
 }

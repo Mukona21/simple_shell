@@ -41,8 +41,8 @@ int main(int argc, char **argv, char **envp)
 		input_buffer = NULL, buffer_size = 0;
 	}
 	if (chars_read == -1)
-		return -1;
-	return 0;
+		return (-1);
+	return (0);
 }
 
 /**

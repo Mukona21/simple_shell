@@ -16,12 +16,13 @@ int changeDirectory(const char *path)
 	if (path == NULL)
 		path = getcwd(buf, size);
 
-	if (chdir(path) == -1) {
+	if (chdir(path) == -1)
+	{
 		perror(path);
-		return -1;
+		return (-1);
 	}
 
-	return 0;
+	return (0);
 }
 
 
@@ -40,15 +41,19 @@ void spawnChildProcess(char **command, char *shellNam, char **env, int cycles)
 	int waitResult = 0;
 
 	pid = fork();
-	if (pid < 0) {
+	if (pid < 0)
+	{
 		perror("Error: ");
 		freeAndExit(command);
-	} else if (pid == 0) {
+	} else if (pid == 0)
+	{
 		executeCommand(command, shellNam, env, cycles);
 		freeMemory(command);
-	} else {
+	} else
+	{
 		waitResult = waitpid(pid, &status, 0);
-		if (waitResult < 0) {
+		if (waitResult < 0)
+		{
 			freeAndExit(command);
 		}
 		freeMemory(command);
