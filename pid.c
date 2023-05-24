@@ -44,17 +44,16 @@ void spawnChildProcess(char **command, char *shellNam, char **env, int cycles)
 	if (pid < 0)
 	{
 		perror("Error: ");
-		freeAndExit(command);
+		freeMemoryAndExit(command);
 	} else if (pid == 0)
 	{
-		executeCommand(command, shellNam, env, cycles);
 		freeMemory(command);
 	} else
 	{
 		waitResult = waitpid(pid, &status, 0);
 		if (waitResult < 0)
 		{
-			freeAndExit(command);
+			freeMemoryAndExit(command);
 		}
 		freeMemory(command);
 	}

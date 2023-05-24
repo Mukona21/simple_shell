@@ -23,7 +23,7 @@ void spawnChildProcess(char **command, char *shellNam, char **env, int cycles);
 /*        exeenv.c       */
 void print_environ(char **environ);
 void exec_cmd(char **command, char *shell_name, char **env, int cycles);
-
+char *concat_path(const char *directory, const char *command);
 
 /*	token.c	*/
 void freeTokens(char **tokens, int count);

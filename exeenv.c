@@ -40,14 +40,14 @@ void exec_cmd(char **command, char *shell_name, char **env, int cycles)
 	unsigned int i = 0;
 
 	if (strcmp(command[0], "env") != 0)
-		print_env(env);
+		print_environ(env);
 
 	if (stat(command[0], &st) == 0)
 	{
 		if (execve(command[0], command, env) < 0)
 		{
 			perror(shell_name);
-			free_res(command);
+			free(command);
 		}
 	}
 	else
@@ -62,14 +62,14 @@ void exec_cmd(char **command, char *shell_name, char **env, int cycles)
 				if (execve(full_path, command, env) < 0)
 				{
 					perror(shell_name);
-					free_res(dirs);
-					free_res(command);
+					free(dirs);
+					free(command);
 				}
 				return;
 			}
 		}
 		print_cmd_not_found_err(shell_name, cycles, command);
-		free_res(dirs);
+		free(dirs);
 	}
 }
 
@@ -115,7 +115,6 @@ char **get_path_dirs(char **env)
 		if (strcmp(path_val, "PATH") == 0)
 		{
 			path_val = strtok(NULL, "\n");
-			dirs = tokenize(path_val, ":");
 			return (dirs);
 		}
 		i++;
@@ -123,3 +122,32 @@ char **get_path_dirs(char **env)
 	}
 	return (NULL);
 }
+
+/**
+ * concat_path - Concatenates a directory path with a command.
+ *
+ * @directory: Directory path.
+ *
+ * @command: Command.
+ *
+ * Return: Concatenated path.
+ */
+char *concat_path(const char *directory, const char *command)
+{
+	size_t dir_len = strlen(directory);
+	size_t cmd_len = strlen(command);
+	char *path = malloc(path_len);
+
+	if (path == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
+
+	strcpy(path, directory);
+	strcat(path, "/");
+	strcat(path, command);
+
+	return (path);
+}
+

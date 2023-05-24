@@ -28,7 +28,7 @@ int main(int argc, char **argv, char **envp)
 		else
 		{
 			input_buffer[chars_read - 1] = '\0';
-			command_tokens = tokenize_input(input_buffer, " \0");
+			command_tokens = tokening(input_buffer, " \0");
 			free(input_buffer);
 			if (compare_strings(command_tokens[0], "exit") != 0)
 				exit_shell(command_tokens);
